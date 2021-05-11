@@ -19,24 +19,24 @@ import os
 import argparse
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 train_transform = transforms.Compose([
-    transforms.Resize(256),
-    transforms.RandomResizedCrop(224),
-    transforms.RandomAffine(degrees=15,scale=(0.8,1.5)),
+    transforms.Resize((224, 224)),
+    #transforms.RandomResizedCrop(224),
+    transforms.RandomAffine(degrees=15, scale=(0.8, 1.5)),
+    #transforms.ColorJitter(0.1, 0.1, 0.1),
     transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
 val_transform = transforms.Compose([
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
+    transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
 parser = argparse.ArgumentParser()  #实例化argumentparser
 parser.add_argument("--epochs", default=100, help="the epochs you want to train")
-parser.add_argument("--lr", default=0.00001, help="the rate to learn")
-parser.add_argument("--batch_size", default=4, help="the batch you want to train")
+parser.add_argument("--lr", default=0.0001, help="the rate to learn")
+parser.add_argument("--batch_size", default=16, help="the batch you want to train")
 parser.add_argument("--checkpoint", default="./外观，内饰，局部/mobilenet_appear.pth", help="the pretrained model")
 args = parser.parse_args()
 
@@ -86,7 +86,7 @@ optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters(
 Accuracy = []
 Loss = []
 Val_Accuracy = []
-BEST_VAL_ACC = 94
+BEST_VAL_ACC = 91
 
 # 训练
 since = time.time()
@@ -162,7 +162,7 @@ for epoch in range(args.epochs):
         print('Find Better Model and Saving it...')
         if not os.path.isdir('checkpoint'):
             os.mkdir('checkpoint')
-        torch.save(model.state_dict(), './checkpoint/mobilenet_appear.pth')
+        torch.save(model.state_dict(), './checkpoint/mobilenet_appear_16.55.pth')
         BEST_VAL_ACC = acc
         print('Saved!')
 

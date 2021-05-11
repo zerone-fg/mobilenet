@@ -21,21 +21,21 @@ import pandas as pd
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 transform = transforms.Compose([
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
+    transforms.Resize((224, 224)),
+    #transforms.CenterCrop(224),
     transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
 # 加载模型
-model = MobileNetV3_Large(num_classes=8)
+model = MobileNetV3_Large(num_classes=3)
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 if torch.cuda.device_count() > 1:
     model = nn.DataParallel(model)
 
 model.to(device)
-model.load_state_dict(torch.load('./checkpoint/mobilenet_direction.pth'))
+model.load_state_dict(torch.load('./checkpoint/mobilenet_appear_16.55.pth'))
 # 测试
 id_list = []
 pred_list = []
